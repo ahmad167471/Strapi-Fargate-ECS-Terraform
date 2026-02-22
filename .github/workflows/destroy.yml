@@ -16,11 +16,11 @@ jobs:
       AWS_REGION: ap-south-1
 
     steps:
-      # 1️ Checkout Repository
+      # 1️⃣ Checkout Repository
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2️ Configure AWS Credentials
+      # 2️⃣ Configure AWS Credentials
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -28,19 +28,20 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      # 3️ Setup Terraform
+      # 3️⃣ Setup Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.6.2
 
-      # 4️ Terraform Init
+      # 4️⃣ Terraform Init
       - name: Terraform Init
         run: terraform -chdir=terraform init
 
-      # 5️ Terraform Destroy
+      # 5️⃣ Terraform Destroy
       - name: Terraform Destroy
         run: |
           terraform -chdir=terraform destroy \
           -auto-approve \
-          -var="aws_account_id=${{ secrets.AWS_ACCOUNT_ID }}"
+          -var="aws_account_id=${{ secrets.AWS_ACCOUNT_ID }}" \
+          -var="aws_region=${{ env.AWS_REGION }}"
