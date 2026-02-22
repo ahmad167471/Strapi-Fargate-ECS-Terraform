@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      AWS_REGION: us-east-1
+      AWS_REGION: ap-south-1
       ECR_REPOSITORY: strapi-ecs-ahmad
       ECS_CLUSTER: strapi-cluster
       ECS_SERVICE: strapi-service
