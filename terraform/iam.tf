@@ -20,5 +20,5 @@
 # We will ONLY reference this role in ECS task definition.
 
 locals {
-  ecs_task_execution_role_arn = "arn:aws:iam::811738710312:role/ecs_fargate_taskRole"
+  ecs_task_execution_role_arn = "arn:aws:iam::373317459749:role/ecs_fargate_task_role"
 }

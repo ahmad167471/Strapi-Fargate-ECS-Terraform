@@ -2,7 +2,7 @@ terraform {
   backend "s3" {
     bucket = "ahmad-tf-state-bucket"
     key    = "strapi/terraform.tfstate"
-    region = "us-east-1"
+    region = "ap-south-1"
   }
   required_providers {
     aws = {
@@ -13,7 +13,7 @@ terraform {
 }
 
 provider "aws" {
-  region = "us-east-1"
+  region = "ap-south-1"
 }
 
 ##################################
@@ -40,7 +40,7 @@ resource "aws_internet_gateway" "igw" {
 resource "aws_subnet" "public_a" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = "10.0.1.0/24"
-  availability_zone       = "us-east-1a"
+  availability_zone       = "ap-south-1a"
   map_public_ip_on_launch = true
   tags = { Name = "strapi-public-a" }
 }
@@ -48,7 +48,7 @@ resource "aws_subnet" "public_a" {
 resource "aws_subnet" "public_b" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = "10.0.2.0/24"
-  availability_zone       = "us-east-1b"
+  availability_zone       = "ap-south-1b"
   map_public_ip_on_launch = true
   tags = { Name = "strapi-public-b" }
 }
