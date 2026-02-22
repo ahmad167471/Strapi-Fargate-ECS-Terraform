@@ -3,6 +3,7 @@ variable "aws_region" {
   description = "AWS region to deploy resources"
   type        = string
 }
+#fixed
 
 # AWS account ID
 variable "aws_account_id" {
