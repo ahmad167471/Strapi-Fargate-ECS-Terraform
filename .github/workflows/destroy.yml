@@ -41,7 +41,8 @@ jobs:
       # 5️⃣ Terraform Destroy
       - name: Terraform Destroy
         run: |
-          terraform -chdir=terraform destroy \
-          -auto-approve \
-          -var="aws_account_id=${{ secrets.AWS_ACCOUNT_ID }}" \
-          -var="aws_region=${{ env.AWS_REGION }}"
+          terraform -chdir=terraform destroy -auto-approve \
+            -var="aws_region=${{ env.AWS_REGION }}" \
+            -var="aws_account_id=${{ secrets.AWS_ACCOUNT_ID }}" \
+            -var="strapi_db_password=${{ secrets.STRAPI_DB_PASSWORD }}" \
+            -var="image_tag=latest"
