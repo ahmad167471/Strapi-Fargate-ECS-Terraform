@@ -7,7 +7,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 jobs:
   build-and-deploy:
@@ -16,10 +15,7 @@ jobs:
     env:
       AWS_REGION: ap-south-1
       ECR_REPOSITORY: strapi-ecs-ahmad
-      ECS_CLUSTER: strapi-cluster
-      ECS_SERVICE: strapi-service
-       #Run
-       
+
     steps:
       # Checkout code
       - name: Checkout code
@@ -33,20 +29,28 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
+      # Setup Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.6.2
+
+      # Terraform Init
+      - name: Terraform Init
+        run: terraform -chdir=terraform init
+
+      # Terraform Apply (Create Infrastructure First)
+      - name: Terraform Apply
+        run: |
+          terraform -chdir=terraform apply -auto-approve \
+            -var="aws_region=${AWS_REGION}" \
+            -var="aws_account_id=${{ secrets.AWS_ACCOUNT_ID }}" \
+            -var="strapi_db_password=${{ secrets.STRAPI_DB_PASSWORD }}" \
+            -var="image_tag=${GITHUB_SHA}"
+
       # Login to Amazon ECR
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
-
-      # Ensure ECR repository exists
-      - name: Ensure ECR repository exists
-        run: |
-          aws ecr describe-repositories \
-            --repository-names $ECR_REPOSITORY \
-            --region $AWS_REGION || \
-          aws ecr create-repository \
-            --repository-name $ECR_REPOSITORY \
-            --image-scanning-configuration scanOnPush=true \
-            --region $AWS_REGION
 
       # Build & Push Docker Image
       - name: Build and push Docker image
@@ -58,26 +62,3 @@ jobs:
 
           docker build -t $IMAGE_URI .
           docker push $IMAGE_URI
-
-      # Setup Terraform
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.6.2
-
-      # Terraform Init
-      - name: Terraform Init
-        run: terraform -chdir=terraform init
-
-      # Terraform Validate
-      - name: Terraform Validate
-        run: terraform -chdir=terraform validate
-
-      # Terraform Apply
-      - name: Terraform Apply
-        run: |
-          terraform -chdir=terraform apply -auto-approve \
-            -var="aws_region=${AWS_REGION}" \
-            -var="aws_account_id=${{ secrets.AWS_ACCOUNT_ID }}" \
-            -var="strapi_db_password=${{ secrets.STRAPI_DB_PASSWORD }}" \
-            -var="image_tag=${GITHUB_SHA}"
