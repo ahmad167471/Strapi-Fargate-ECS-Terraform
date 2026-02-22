@@ -3,7 +3,7 @@
 ########################################
 
 resource "aws_ecr_repository" "repo" {
-  name                 = "strapi-ecs-ahmad-amin"
+  name                 = "strapi-ecs-ahmad"
   image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {
